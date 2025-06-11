@@ -1,0 +1,16 @@
+{
+  // "is-main": true,
+  "targets": {
+    "top.mbt": [
+      "native"
+    ]
+  },
+  "link":{
+    "native":{
+      "cc-link-flags": "-I./src/raylib/include -L./src/raylib/lib -lraylib ./src/raylib/wrapper.c"
+    }
+  },
+  "native-stub": [
+    "stub.c"
+  ]
+}
