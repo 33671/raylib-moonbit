@@ -1,15 +1,16 @@
 {
-  // "is-main": true,
+  "is-main": false,
   "targets": {
     "top.mbt": [
       "native"
     ]
   },
-  "link":{
-    "native":{
-      "cc-link-flags": "-I./src/raylib/include -L./src/raylib/lib -lraylib ./src/raylib/wrapper.c"
-    }
-  },
+  // "link":{
+  //   "native":{
+  //     "cc-flags": "-I./src/raylib/include",
+  //     "cc-link-flags": "-L./src/raylib/lib -lraylib -I./src/raylib/include"
+  //   }
+  // },
   "native-stub": [
     "stub.c"
   ]

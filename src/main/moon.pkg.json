@@ -1,0 +1,19 @@
+{
+  "is-main": true,
+  "targets": {
+    "main.mbt": [
+      "native"
+    ]
+  },
+  "link": {
+    "native": {
+      "cc-link-flags": "-L./src/raylib/lib -lraylib"
+    }
+  },
+  "import": [
+    {
+      "path": "zhang/raylib-moonbit/raylib",
+      "alias": "rl"
+    }
+  ]
+}
