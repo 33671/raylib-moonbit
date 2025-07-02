@@ -12,8 +12,25 @@ pub(all) struct Vector2 {
 } derive(Show, Eq)
 
 ///|
+pub(all) struct Vector3 {
+  mut x : Float
+  mut y : Float
+  mut z : Float
+} derive(Show, Eq)
+
+///|
 pub fn Vector2::new(x : Float, y : Float) -> Vector2 {
   Vector2::{ x, y }
+}
+
+///|
+pub fn Vector3::new(x : Float, y : Float, z : Float) -> Vector3 {
+  Vector3::{ x, y, z }
+}
+
+///|
+pub fn Vector3::to_array(self : Vector3) -> FixedArray[Float] {
+  return [self.x, self.y, self.z]
 }
 
 ///|
@@ -147,11 +164,16 @@ pub fn get_mouse_position() -> Vector2 {
 
 ///|
 extern "C" fn ffi_is_mouse_button_pressed(button : Int) -> Bool = "IsMouseButtonPressed"
+
+///|
 extern "C" fn ffi_is_mouse_button_down(button : Int) -> Bool = "IsMouseButtonDown"
+
 ///|
 pub fn is_mouse_button_pressed(button : MouseButton) -> Bool {
   ffi_is_mouse_button_pressed(button.to_int())
 }
+
+///|
 pub fn is_mouse_button_down(button : MouseButton) -> Bool {
   ffi_is_mouse_button_down(button.to_int())
 }
@@ -279,8 +301,11 @@ pub fn get_screen_to_world_2d(p : Vector2, cam : Camera2D) -> Vector2? {
   }
   None
 }
+
+///|
 extern "C" fn ffi_get_mouse_delta() -> FixedArray[Float] = "ffi_get_mouse_delta"
 
+///|
 pub fn get_mouse_delta() -> Vector2 {
   let arr = ffi_get_mouse_delta()
   return Vector2::new(arr[0], arr[1])

@@ -105,8 +105,8 @@ test "mouse_input" {
     // previous_mouse_position = current_mouse_position
     if @rl.is_mouse_button_down(@rl.MouseButton::Left) {
       let mut delta = @rl.get_mouse_delta();
-      delta = @rl.vector_scale(delta, -1.0/cam.zoom)
-      cam.set_target(@rl.vector_add(cam.target, delta))
+      delta = @rl.vector2_scale(delta, -1.0/cam.zoom)
+      cam.set_target(@rl.vector2_add(cam.target, delta))
     }
     @rl.begin_drawing()
     @rl.clear_background(RayWhite)
@@ -141,6 +141,6 @@ test "mouse_input" {
   @rl.close_window()
 }
 fn main {
-  
+
 
 }
