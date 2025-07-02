@@ -9,7 +9,7 @@ fn to_cstr(s : String) -> Bytes {
 pub(all) struct Vector2 {
   mut x : Float
   mut y : Float
-}
+} derive(Show, Eq)
 
 ///|
 pub fn Vector2::new(x : Float, y : Float) -> Vector2 {
@@ -53,7 +53,7 @@ pub fn clear_background(color : Color) -> Unit {
 }
 
 ///|
-#borrow(chars)
+#borrow(chars, color)
 extern "C" fn ffi_draw_text(
   chars : Bytes,
   posX : Int,
@@ -78,6 +78,7 @@ pub fn draw_text(
 pub extern "C" fn end_drawing() = "EndDrawing"
 
 ///|
+#borrow(pos, color)
 extern "C" fn ffi_draw_circle_v(
   pos : FixedArray[Float],
   r : Float,
@@ -86,9 +87,26 @@ extern "C" fn ffi_draw_circle_v(
 
 ///|
 pub fn draw_circle_v(pos : Vector2, radius : Float, color : Color) -> Unit {
-  // let v = ffi_make_vector2([pos.x, pos.y])
-  // let c = ffi_make_color(color.to_rgba())
   ffi_draw_circle_v(pos.to_array(), radius, color.to_rgba())
+}
+
+///|
+#borrow(color)
+extern "C" fn ffi_draw_circle(
+  posX : Int,
+  posY : Int,
+  radius : Float,
+  color : FixedArray[Byte]
+) = "ffi_draw_circle"
+
+///|
+pub fn draw_circle(
+  posX : Int,
+  posY : Int,
+  radius : Float,
+  color : Color
+) -> Unit {
+  ffi_draw_circle(posX, posY, radius, color.to_rgba())
 }
 
 ///|
@@ -117,6 +135,7 @@ pub extern "C" fn hide_cursor() = "HideCursor"
 pub extern "C" fn show_cursor() = "ShowCursor"
 
 ///|
+#borrow(pos)
 extern "C" fn ffi_get_mouse_position(pos : FixedArray[Float]) = "ffi_get_mouse_position"
 
 ///|
@@ -128,13 +147,17 @@ pub fn get_mouse_position() -> Vector2 {
 
 ///|
 extern "C" fn ffi_is_mouse_button_pressed(button : Int) -> Bool = "IsMouseButtonPressed"
-
+extern "C" fn ffi_is_mouse_button_down(button : Int) -> Bool = "IsMouseButtonDown"
 ///|
 pub fn is_mouse_button_pressed(button : MouseButton) -> Bool {
   ffi_is_mouse_button_pressed(button.to_int())
 }
+pub fn is_mouse_button_down(button : MouseButton) -> Bool {
+  ffi_is_mouse_button_down(button.to_int())
+}
 
 ///|
+#borrow(color)
 extern "C" fn ffi_draw_rectangle(
   x : Int,
   y : Int,
@@ -153,4 +176,112 @@ pub fn draw_rectangle(
 ) -> Unit {
   ffi_draw_rectangle(x, y, width, height, color.to_rgba())
 }
-pub extern "C" fn get_mouse_wheel_move() -> Float= "GetMouseWheelMove"
+
+///|
+pub extern "C" fn get_mouse_wheel_move() -> Float = "GetMouseWheelMove"
+
+///|
+pub extern "C" fn get_random_value(min : Int, max : Int) -> Int = "GetRandomValue"
+
+///|
+type FFI_Camera2d
+
+///|
+#borrow(target, offset)
+extern "C" fn make_camera2d(
+  target : FixedArray[Float],
+  offset : FixedArray[Float],
+  ratation : Float,
+  zoom : Float
+) -> FFI_Camera2d = "ffi_make_camera2d"
+
+///|
+extern "C" fn ffi_begin_mode_2D(cam : FFI_Camera2d) = "ffi_begin_mode_2d"
+
+///|
+pub fn begin_mode_2d(cam : Camera2D) -> Unit {
+  if cam.ffi_ptr is None {
+    println("Camera2D not initialized, cannot begin mode 2D")
+    panic()
+  }
+  let ffi_cam = cam.ffi_ptr.unwrap()
+  ffi_begin_mode_2D(ffi_cam)
+}
+
+///|
+pub extern "C" fn end_mode_2d() = "EndMode2D"
+
+///|
+#borrow(rec, color)
+extern "C" fn ffi_draw_rectangle_rec(
+  rec : FixedArray[Float],
+  color : FixedArray[Byte]
+) = "ffi_draw_rectangle_rec"
+
+///|
+pub fn draw_rectangle_rec(rec : Rectangle, color : Color) -> Unit {
+  ffi_draw_rectangle_rec(rec.to_array(), color.to_rgba())
+}
+
+///|
+#borrow(color)
+extern "C" fn ffi_draw_line(
+  x : Int,
+  y : Int,
+  endx : Int,
+  endy : Int,
+  color : FixedArray[Byte]
+) = "ffi_draw_line"
+
+///|
+pub fn draw_line(
+  x : Int,
+  y : Int,
+  endx : Int,
+  endy : Int,
+  color : Color
+) -> Unit {
+  ffi_draw_line(x, y, endx, endy, color.to_rgba())
+}
+
+///|
+#borrow(color)
+extern "C" fn ffi_draw_rectangle_lines(
+  x : Int,
+  y : Int,
+  w : Int,
+  h : Int,
+  color : FixedArray[Byte]
+) = "ffi_draw_rectangle_lines"
+
+///|
+pub fn draw_rectangle_lines(
+  x : Int,
+  y : Int,
+  w : Int,
+  h : Int,
+  color : Color
+) -> Unit {
+  ffi_draw_rectangle_lines(x, y, w, h, color.to_rgba())
+}
+
+///|
+extern "C" fn ffi_get_screen_to_world_2d(
+  p : FixedArray[Float],
+  cam : FFI_Camera2d
+) -> FixedArray[Float] = "ffi_get_screen_to_world_2d"
+
+///|
+pub fn get_screen_to_world_2d(p : Vector2, cam : Camera2D) -> Vector2? {
+  if cam.ffi_ptr is Some(ffi_ptr) {
+    let arr = ffi_get_screen_to_world_2d(p.to_array(), ffi_ptr)
+    return Some(Vector2::new(arr[0], arr[1]))
+  }
+  None
+}
+extern "C" fn ffi_get_mouse_delta() -> FixedArray[Float] = "ffi_get_mouse_delta"
+
+pub fn get_mouse_delta() -> Vector2 {
+  let arr = ffi_get_mouse_delta()
+  return Vector2::new(arr[0], arr[1])
+}

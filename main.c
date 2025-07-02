@@ -1,21 +1,6 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - 2D Camera system
-*
-*   Example complexity rating: [★★☆☆] 2/4
-*
-*   Example originally created with raylib 1.5, last time updated with raylib 3.0
-*
-*   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-*   BSD-like license that allows static linking with closed source software
-*
-*   Copyright (c) 2016-2025 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
-
 #include "raylib.h"
 #include <math.h>
-
+#include <raymath.h>
 #define MAX_BUILDINGS   100
 
 //------------------------------------------------------------------------------------
@@ -33,7 +18,7 @@ int main(void)
     Rectangle player = { 400, 280, 40, 40 };
     Rectangle buildings[MAX_BUILDINGS] = { 0 };
     Color buildColors[MAX_BUILDINGS] = { 0 };
-
+// Vector2Subtract
     int spacing = 0;
 
     for (int i = 0; i < MAX_BUILDINGS; i++)
@@ -60,7 +45,7 @@ int main(void)
 
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-
+    // GetScreenToWorld2D()
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
@@ -76,6 +61,7 @@ int main(void)
         // Camera rotation controls
         if (IsKeyDown(KEY_A)) camera.rotation--;
         else if (IsKeyDown(KEY_S)) camera.rotation++;
+        GetMouseDelta();
 
         // Limit camera rotation to 80 degrees (-40 to 40)
         if (camera.rotation > 40) camera.rotation = 40;
