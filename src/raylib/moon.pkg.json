@@ -3,14 +3,35 @@
   "targets": {
     "top.mbt": [
       "native"
+    ],
+    "camera2d.mbt": [
+      "native"
+    ],
+    "colors.mbt": [
+      "native"
+    ],
+    "keycodes.mbt": [
+      "native"
+    ],
+    "mouse.mbt": [
+      "native"
+    ],
+    "raymath.mbt": [
+      "native"
+    ],
+    "raymath_test.mbt": [
+      "native"
+    ],
+    "rectangle.mbt": [
+      "native"
     ]
   },
-  // "link":{
-  //   "native":{
-  //     "cc-flags": "-I./src/raylib/include",
-  //     "cc-link-flags": "-L./src/raylib/lib -lraylib -I./src/raylib/include"
-  //   }
-  // },
+  "link":{
+    "native":{
+      "stub-cc-flags": "-I./src/raylib/include",
+      "stub-cc-link-flags": "-L./src/raylib/lib -lraylib"
+    }
+  },
   "native-stub": [
     "stub.c"
   ]

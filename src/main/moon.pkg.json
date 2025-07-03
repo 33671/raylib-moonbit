@@ -7,7 +7,7 @@
   },
   "link": {
     "native": {
-      "cc-link-flags": "-L./src/raylib/lib -lraylib"
+      "cc-link-flags": "-L./src/raylib/lib -lraylib -lm"
     }
   },
   "import": [
